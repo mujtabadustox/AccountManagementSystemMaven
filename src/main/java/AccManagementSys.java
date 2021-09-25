@@ -10,15 +10,26 @@ public class AccManagementSys {
 	Account[] AccountObjects = new Account[50];
 	Customer[] CustomerObjects = new Customer[50];
 	
-	boolean CreateAccount(String name,String address,int phoneNo,String Acctype,int balance) {
+	boolean CreateAccount(String name,int id,String address,int phoneNo,String Acctype,int balance) {
 		
 		boolean found=false;
+		
+		for (int i=0 ; i<count ; i++) {
+			if (AccountObjects[i]!=null) {
+				
+				if (AccountObjects[i].accountNumber==id ) {
+					
+					System.out.println("Id is in Use");
+					return false;
+				}
+				}
+		}
 		
 		for (int i=0 ; i<count ; i++) {
 			
 			if (AccountObjects[i]!=null) {
 				
-					if (AccountObjects[i].accountNumber==count && CustomerObjects[i].name.equals(name) && AccountObjects[i].accountType.equals(Acctype)) {
+					if (CustomerObjects[i].phoneNo==phoneNo && CustomerObjects[i].name.equals(name) && AccountObjects[i].accountType.equals(Acctype)) {
 				found=true;
 					}
 			}
@@ -32,7 +43,7 @@ public class AccManagementSys {
 			//System.out.println("Count:"+count);
 			SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");  
 		    Date date = new Date();  
-		    AccountObjects[count]=new Account(Acctype,date,count,balance);
+		    AccountObjects[count]=new Account(Acctype,date,id,balance);
 			CustomerObjects[count]=new Customer(name,address,phoneNo);
 		
 			
@@ -118,7 +129,7 @@ public class AccManagementSys {
 		return false;
 	}
 	
-	void checkBalance(int AccNo,String CTName) {
+	int checkBalance(int AccNo,String CTName) {
 		
 
 		for (int i=0 ;i<count; i++) {
@@ -129,40 +140,67 @@ public class AccManagementSys {
 					deduct[i]++;
 					System.out.println("Account Balance:"+AccountObjects[i].balance);
 					System.out.println("Note For Saving Accounts:The Balance is After Cutting of Zakat");
+					return AccountObjects[i].balance;
 				}
 			}
 			
 		}
 		
+		return -1;
+		
 	}
 	
-	void deposit(int AccNo,String CTName,int amount) {
+	int deposit(int AccNo,String CTName,int amount) {
 		for (int i=0 ;i<count; i++) {
 			if (AccountObjects[i]!=null) {
 				if (AccountObjects[i].accountNumber==AccNo && (CTName.equals(CustomerObjects[i].name))) {
 					AccountObjects[i].balance+=amount;
 					System.out.println("Account Balance After Deposit:"+AccountObjects[i].balance);
+					return AccountObjects[i].balance;
 				}
 			}
 			
 		}
 		
+		return -1;
 	}
 	
-	void withdraw(int AccNo,String CTName,int amount) {
+	boolean withdraw(int AccNo,String CTName,int amount) {
 		for (int i=0 ;i<count; i++) {
 			if (AccountObjects[i]!=null) {
 				if (AccountObjects[i].accountNumber==AccNo && (CTName.equals(CustomerObjects[i].name))) {
-					AccountObjects[i].balance-=amount;
-					System.out.println("Account Balance After Withdrawal:"+AccountObjects[i].balance);
+					if (AccountObjects[i].accountType.equals("Saving") || AccountObjects[i].accountType.equals("saving")) {
+						
+						if (amount<AccountObjects[i].balance) {
+						AccountObjects[i].balance-=amount;
+						System.out.println("Account Balance After Withdrawal:"+AccountObjects[i].balance);
+						return true;
+						}else {
+						return false;
+						}
+						
+				}else if(AccountObjects[i].accountType.equals("Checking") || AccountObjects[i].accountType.equals("checking")){
+					
+					if (amount<((AccountObjects[i].balance)+5000)) {
+						AccountObjects[i].balance-=amount;
+						System.out.println("Account Balance After Withdrawal:"+AccountObjects[i].balance);
+						return true;
+						}else {
+						return false;
+						}
+					
+				}
+						
+					
 				}
 			}
 			
 		}
 		
+		return false;
 	}
 	
-	void calculateZakat(int AccNo,String CTName) {
+	double calculateZakat(int AccNo,String CTName) {
 		
 		for (int i=0 ;i<count; i++) {
 			if (AccountObjects[i]!=null) {
@@ -170,17 +208,21 @@ public class AccManagementSys {
 					if (AccountObjects[i].accountType.equals("saving") || AccountObjects[i].accountType.equals("Saving")) {
 						System.out.println("Account Type: "+AccountObjects[i].accountType);
 						System.out.println("Zakat: "+zakat[i]);
+						return zakat[i];
 					}else {
 						System.out.println("Your Account Type is Not Saving");
 						System.out.println("Zakat: "+zakat[i]);
+						return 0;
 					}
 				}
 			}
 			
 		}
+		
+		return -1;
 	}
 	
-	void displayAllDeductions(int AccNo,String CTName) {
+	double displayAllDeductions(int AccNo,String CTName) {
 		
 		double total=0;
 		
@@ -205,6 +247,7 @@ public class AccManagementSys {
 		}
 		
 		System.out.println("Total Deductions (Including Zakat and Fee) Are: "+total);
+		return total;
 		
 	}
 }

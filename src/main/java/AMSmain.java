@@ -28,6 +28,9 @@ public class AMSmain {
 				System.out.println("Enter Your Name");
 				String Cname="";
 				Cname+=S.nextLine();
+				System.out.println("Enter Your Id");
+				int id;
+				id=Integer.parseInt(S.nextLine());
 				System.out.println("Enter Your PhoneNo");
 				int ph;
 				ph=Integer.parseInt(S.nextLine());
@@ -42,7 +45,7 @@ public class AMSmain {
 				
 				
 				
-				boolean check=AMS.CreateAccount(Cname,ad,ph,at,bal);
+				boolean check=AMS.CreateAccount(Cname,id,ad,ph,at,bal);
 				
 				if(check==true) {
 					System.out.println("Account Created Successfully!");

@@ -147,22 +147,47 @@ public class AccountManagemetSystemMavenTest {
 			boolean check=AMS.withdraw(75, "Mujtaba Ali", 95000);
 			assertFalse(check);
 		}
-//Calculate Zakat Saving (Positive)
+//Calculate Zakat Saving Account with more than 20k balane (Positive)
 		@Test
 		public void testZakat() {
 			AMS.CreateAccount("Mujtaba Ali",75,"Islamabad" , 125, "Saving", 70000);
 			double check=AMS.calculateZakat(75, "Mujtaba Ali");
 			assertEquals(1750,check,0.01);
 		}
-//Calculate Zakat Saving (Negative) [No Zakat For Checking Accounts]
+//Calculate Zakat Saving Account with less than 20k balance (Negative)
 		@Test
 		public void testZakat1() {
+			AMS.CreateAccount("Mujtaba Ali",75,"Islamabad" , 125, "Saving", 19000);
+			double check=AMS.calculateZakat(75, "Mujtaba Ali");
+			assertEquals(0,check,0.01);
+		}
+//Calculate Zakat Checking Account (Negative) [No Zakat For Checking Accounts]
+		@Test
+		public void testZakat2() {
 			AMS.CreateAccount("Mujtaba Ali",75,"Islamabad" , 125, "Checking", 70000);
 			double check=AMS.calculateZakat(75, "Mujtaba Ali");				
 			assertEquals(0,check,0.01);
 		}		
-		
-	
+//Calculate Total Deductions Checking Account (No Zakat)	
+		@Test
+		public void testTotalDeduction() {
+			AMS.CreateAccount("Mujtaba Ali",75,"Islamabad" , 125, "Checking", 70000);
+			AMS.checkBalance(75, "Mujtaba Ali");//Fee Rs:1
+			AMS.checkBalance(75, "Mujtaba Ali");//Fee Rs:1
+			AMS.checkBalance(75, "Mujtaba Ali");//Fee Rs:1
+			double check=AMS.displayAllDeductions(75, "Mujtaba Ali");
+			assertEquals(3,check,0.01);//Fee Rs:3
+		}
+//Calculate Total Deductions		
+		@Test
+		public void testTotalDeduction1() {
+			AMS.CreateAccount("Mujtaba Ali",75,"Islamabad" , 125, "Saving", 70000);
+			AMS.checkBalance(75, "Mujtaba Ali");//Fee Rs:1
+			AMS.checkBalance(75, "Mujtaba Ali");//Fee Rs:1
+			AMS.checkBalance(75, "Mujtaba Ali");//Fee Rs:1
+			double check=AMS.displayAllDeductions(75, "Mujtaba Ali");
+			assertEquals(1753,check,0.01);//Fee Rs:3 + Zakat:1750 Rs
+		}	
 	
 	
 	
